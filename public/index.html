@@ -341,9 +341,6 @@
 <button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" id="tab-btn-attractions" onclick="switchAdminTab('attractions')">
 <i class="fa-solid fa-map-location-dot mr-1"></i> Objek Wisata &amp; QR Code
                     </button>
-<button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" id="tab-btn-integration" onclick="switchAdminTab('integration')">
-<i class="fa-solid fa-file-excel mr-1"></i> Google Sheets &amp; Sync
-                    </button>
 <button class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition" id="tab-btn-security" onclick="switchAdminTab('security')"><i class="fa-solid fa-key mr-1"></i> Keamanan Admin</button>
 <button class="px-3 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100 transition" onclick="logoutAdmin()" title="Keluar">
 <i class="fa-solid fa-right-from-bracket"></i>
@@ -498,117 +495,6 @@
 </div>
 </div>
 </div>
-<!-- TAB 4: GOOGLE SHEETS INTEGRATION & GUIDE -->
-<div class="hidden space-y-6" id="admin-tab-integration">
-<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-<div class="border-b border-slate-100 pb-4">
-<h4 class="font-bold text-slate-900 text-base">Integrasi Google Sheets &amp; Sinkronisasi</h4>
-<p class="text-xs text-slate-500 mt-1">Hubungkan formulir TABE PALU ke Google Sheets Anda menggunakan Google Apps Script Web App.</p>
-</div>
-<!-- Webhook URL Configuration -->
-<div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-<label class="block text-xs font-bold text-slate-700 uppercase">Google Apps Script Web App URL (Endpoint)</label>
-<div class="flex gap-2">
-<input class="flex-1 px-4 py-2.5 border border-slate-300 rounded-xl text-xs bg-white" id="sheets-endpoint-url" placeholder="https://script.google.com/macros/s/.../exec" type="url"/>
-<button class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold transition" onclick="saveWebhookUrl()">Simpan URL</button>
-</div>
-<p class="text-xs text-slate-500">Jika endpoint tersimpan, Google Sheets menjadi sumber data dashboard. Gunakan tombol sinkronisasi untuk memuat ulang data terbaru dari spreadsheet.</p><div class="flex flex-wrap items-center gap-3"><button class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold" onclick="syncFromGoogleSheets()"><i class="fa-solid fa-rotate mr-1"></i> Sinkronkan Sekarang</button><span class="text-xs text-slate-500" id="sheets-sync-status">Belum disinkronkan</span></div>
-</div>
-<!-- Step-by-Step Guide -->
-<div class="space-y-4 text-sm">
-<h5 class="font-bold text-slate-900"><i class="fa-solid fa-book text-orange-500 mr-1"></i> Panduan Langkah demi Langkah Integrasi Google Sheets:</h5>
-<ol class="list-decimal list-inside space-y-2 text-slate-600 text-xs sm:text-sm">
-<li>Buat Google Spreadsheet baru dengan nama: <b class="text-slate-900">DATABASE KUNJUNGAN WISATAWAN KOTA PALU</b>.</li>
-<li>Buat sheet/worksheet dengan nama: <b class="text-slate-900">DATA_KUNJUNGAN</b>.</li>
-<li>Pada baris pertama (Header), masukkan kolom berikut secara berurutan dari A sampai R:
-                                <div class="bg-slate-100 p-2 rounded mt-1 font-mono text-[11px] text-slate-800 overflow-x-auto">
-                                    ID Kunjungan | Tanggal Kunjungan | Jam Kunjungan (WITA) | Nama Lengkap | Usia | Jenis Kelamin | Kategori Asal | Kabupaten/Kota Asal | Provinsi Asal | Negara Asal | Objek Wisata | Apakah Menginap | Jenis Akomodasi | Keterangan Akomodasi Lainnya | Lama Menginap (Malam) | Kategori Jumlah Rombongan | Jumlah Orang Sebenarnya | Status Penyimpanan
-                                </div>
-</li>
-<li>Buka menu <b class="text-slate-900">Extensions &gt; Apps Script</b> di Google Sheets Anda.</li>
-<li>Salin kode Google Apps Script di bawah ini, tempel ke editor Apps Script, lalu simpan (`Ctrl + S`).</li>
-<li>Klik <b class="text-slate-900">Deploy &gt; New deployment</b>. Pilih type: <b class="text-slate-900">Web app</b>.</li>
-<li>Atur <b class="text-slate-900">Execute as: Me</b> dan <b class="text-slate-900">Who has access: Anyone</b>. Klik Deploy dan salin URL Web App yang dihasilkan ke kolom di atas.</li>
-</ol>
-<div class="space-y-2 pt-2">
-<div class="flex items-center justify-between">
-<span class="text-xs font-bold text-slate-700 uppercase">Kode Google Apps Script (`Code.gs`)</span>
-<button class="px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-bold transition" onclick="copyGasCode()">
-<i class="fa-solid fa-copy mr-1"></i> Salin Kode
-                                </button>
-</div>
-<textarea class="w-full p-3 font-mono text-[11px] bg-slate-900 text-emerald-400 rounded-xl focus:outline-none" id="gas-code-text" readonly="" rows="10">const SHEET_NAME = "DATA_KUNJUNGAN";
-const ATTRACTIONS_SHEET = "OBJEK_WISATA";
-const HEADERS = ["ID Kunjungan", "Tanggal Kunjungan", "Jam Kunjungan (WITA)", "Nama Lengkap", "Usia", "Jenis Kelamin", "Kategori Asal", "Kabupaten/Kota Asal", "Provinsi Asal", "Negara Asal", "Objek Wisata", "Apakah Menginap", "Jenis Akomodasi", "Keterangan Akomodasi Lainnya", "Lama Menginap (Malam)", "Kategori Jumlah Rombongan", "Jumlah Orang Sebenarnya", "Status Penyimpanan"];
-const ATTRACTION_HEADERS = ["id", "name", "category", "active"];
-
-function doGet(e) {
-  const p = (e &amp;&amp; e.parameter) || {};
-  let result;
-  try {
-    if (p.action === "list") {
-      const sh = getSheet_(); const values = sh.getDataRange().getDisplayValues();
-      const headers = values.length ? values[0] : HEADERS;
-      const data = values.slice(1).filter(r =&gt; r.some(c =&gt; c !== "")).map(r =&gt; { const o = {}; headers.forEach((h,i) =&gt; o[h] = r[i] || ""); return o; });
-      result = {result:"success", sheet:SHEET_NAME, count:data.length, data};
-    } else if (p.action === "listAttractions") {
-      const sh = getAttractionsSheet_();
-      const rows = sh.getLastRow() &gt; 1 ? sh.getRange(2,1,sh.getLastRow()-1,4).getDisplayValues() : [];
-      result = {result:"success", sheet:ATTRACTIONS_SHEET, data:rows.filter(r =&gt; r[0] &amp;&amp; r[1]).map(r =&gt; ({id:r[0],name:r[1],category:r[2]||"",active:String(r[3]).toLowerCase() !== "false"}))};
-    } else if (p.action === "saveAttractions") {
-      const expectedPin = PropertiesService.getScriptProperties().getProperty("ADMIN_PIN");
-      if (!expectedPin) throw new Error("PIN server belum diatur di Script Properties (ADMIN_PIN).");
-      if (String(p.pin || "") !== expectedPin) throw new Error("PIN admin tidak sesuai.");
-      const data = JSON.parse(p.data || "[]");
-      if (!Array.isArray(data) || data.length &gt; 300) throw new Error("Format/jumlah objek wisata tidak valid.");
-      const clean = data.map(a =&gt; [String(a.id||""),String(a.name||"").trim(),String(a.category||""),a.active === false ? "false" : "true"]);
-      if (clean.some(r =&gt; !r[0] || !r[1])) throw new Error("Setiap objek wisata wajib memiliki ID dan nama.");
-      const sh = getAttractionsSheet_();
-      sh.clearContents(); sh.getRange(1,1,1,ATTRACTION_HEADERS.length).setValues([ATTRACTION_HEADERS]);
-      if (clean.length) sh.getRange(2,1,clean.length,4).setValues(clean);
-      sh.setFrozenRows(1); sh.getRange(1,1,1,4).setFontWeight("bold");
-      result = {result:"success",message:"Daftar objek wisata tersimpan",count:clean.length};
-    } else result = {result:"success",message:"TABE PALU API aktif"};
-  } catch(err) { result = {result:"error",message:String(err),data:[]}; }
-  const json = JSON.stringify(result); const cb = String(p.callback || "");
-  if (cb) {
-    if (!/^[A-Za-z_$][0-9A-Za-z_$\.\[\]]*$/.test(cb)) return ContentService.createTextOutput(JSON.stringify({result:"error",message:"Callback tidak valid"})).setMimeType(ContentService.MimeType.JSON);
-    return ContentService.createTextOutput(cb+"("+json+");").setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
-  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  try {
-    const data = JSON.parse((e &amp;&amp; e.postData &amp;&amp; e.postData.contents) || "{}");
-    if (!data.id_kunjungan) throw new Error("ID kunjungan wajib diisi.");
-    const sh = getSheet_(); const last = sh.getLastRow();
-    if (last &gt;= 2 &amp;&amp; sh.getRange(2,1,last-1,1).getDisplayValues().flat().includes(String(data.id_kunjungan))) return jsonOutput_({result:"success",duplicate:true,id_kunjungan:data.id_kunjungan});
-    sh.appendRow([safe_(data.id_kunjungan),safe_(data.tanggal_kunjungan),safe_(data.jam_kunjungan),safe_(data.nama_lengkap),safe_(data.usia),safe_(data.jenis_kelamin),safe_(data.kategori_asal),safe_(data.kabupaten_sulteng),safe_(data.provinsi_asal),safe_(data.negara_asal),safe_(data.objek_wisata),safe_(data.menginap),safe_(data.jenis_akomodasi),safe_(data.keterangan_akomodasi),safe_(data.lama_menginap),safe_(data.jumlah_rombongan_kategori),safe_(data.jumlah_orang_sebenarnya),"Tersimpan (Google Sheets)"]);
-    return jsonOutput_({result:"success",id_kunjungan:data.id_kunjungan});
-  } catch(err) { return jsonOutput_({result:"error",message:String(err)}); }
-}
-function getSheet_() {
-  const ss=SpreadsheetApp.getActiveSpreadsheet(); if(!ss) throw new Error("Script harus terikat pada Google Spreadsheet database.");
-  let sh=ss.getSheetByName(SHEET_NAME); if(!sh) sh=ss.insertSheet(SHEET_NAME);
-  if(sh.getLastRow()===0){sh.getRange(1,1,1,HEADERS.length).setValues([HEADERS]);sh.setFrozenRows(1);sh.getRange(1,1,1,HEADERS.length).setFontWeight("bold");} return sh;
-}
-function getAttractionsSheet_() {
-  const ss=SpreadsheetApp.getActiveSpreadsheet(); if(!ss) throw new Error("Script harus terikat pada Google Spreadsheet database.");
-  let sh=ss.getSheetByName(ATTRACTIONS_SHEET); if(!sh) sh=ss.insertSheet(ATTRACTIONS_SHEET);
-  if(sh.getLastRow()===0){sh.getRange(1,1,1,4).setValues([ATTRACTION_HEADERS]);sh.setFrozenRows(1);sh.getRange(1,1,1,4).setFontWeight("bold");
-    const seed=[["1","Pantai Talise","Wisata Bahari","true"],["2","Jembatan Lalonge (Palu IV)","Landmark / Kota","true"],["3","Pantai Boneoge","Wisata Bahari","true"],["4","Puncak Gawalise","Wisata Alam","true"],["5","Kawasan Wisata Religi Ampana / Al-Khairaat","Wisata Religi","true"],["6","Museum Sulteng","Wisata Budaya","true"],["7","Souraja (Rumah Raja Palu)","Wisata Sejarah","true"]]; sh.getRange(2,1,seed.length,4).setValues(seed);
-  } return sh;
-}
-function safe_(v){if(v===null||v===undefined||v==="")return "-";const s=String(v);return /^[=+\-@]/.test(s)?"'"+s:s;}
-function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);}
-</textarea>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- TAB KEAMANAN ADMIN -->
 <div class="hidden space-y-6" id="admin-tab-security">
 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
 <div class="border-b border-slate-100 pb-4">
@@ -762,7 +648,7 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
             }
         ];
 
-        let webhookUrl = 'https://script.google.com/macros/s/AKfycbyhOJVFxKIbFvCir_mUaVOjsvbQLv3ymw7ix3wIxHbVQjlNteBCi6vPunzQs7ioNHQ/exec';
+        const webhookUrl = 'https://script.google.com/macros/s/AKfycbwTUt6b9YoZ26jtjuxK945WsJzzUNm1cceNvEMZJtcj1_uMmpFYppVRTYFOoXA6wWH/exec';
         let chartsInstance = {};
 
         // Initialize App on DOM Content Loaded
@@ -799,17 +685,11 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
             if (savedAttractions) {
                 try { attractions = JSON.parse(savedAttractions); } catch(e) {}
             }
-            const savedWebhook = localStorage.getItem('tabe_palu_webhook');
-            if (savedWebhook) {
-                webhookUrl = savedWebhook;
-            }
-            document.getElementById('sheets-endpoint-url').value = webhookUrl;
         }
 
         function saveToLocalStorage() {
             localStorage.setItem('tabe_palu_visits', JSON.stringify(visits));
             localStorage.setItem('tabe_palu_attractions', JSON.stringify(attractions));
-            localStorage.setItem('tabe_palu_webhook', webhookUrl);
         }
 
         // Switch Main Views
@@ -1109,7 +989,7 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
 
         // ================= ADMIN DASHBOARD LOGIC =================
         function switchAdminTab(tabName) {
-            ['stats','data','attractions','integration','security'].forEach(name => {
+            ['stats','data','attractions','security'].forEach(name => {
                 document.getElementById('admin-tab-' + name).classList.add('hidden');
                 const btn = document.getElementById('tab-btn-' + name);
                 btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
@@ -1573,7 +1453,7 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
         }
 
         async function saveAttractionsOnline() {
-            if (!webhookUrl) throw new Error('URL Google Apps Script belum diatur.');
+            if (!webhookUrl) throw new Error('Endpoint Google Apps Script belum tersedia.');
             const pin = prompt('Masukkan PIN admin Google Apps Script untuk menyimpan perubahan objek wisata:');
             if (pin === null || !pin.trim()) throw new Error('Penyimpanan dibatalkan karena PIN tidak diisi.');
             const payload = JSON.stringify(attractions);
@@ -1591,17 +1471,10 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
             return true;
         }
 
-        function saveWebhookUrl() {
-            webhookUrl = document.getElementById('sheets-endpoint-url').value.trim();
-            saveToLocalStorage();
-            alert('URL Google Apps Script disimpan. Aplikasi akan mencoba membaca data dari Google Sheets.');
-            if (webhookUrl) syncFromGoogleSheets(true);
-        }
-
         // Baca data dari Apps Script memakai JSONP agar tidak terhalang CORS.
         function readSheetsJsonp(action = 'list') {
             return new Promise((resolve, reject) => {
-                if (!webhookUrl) return reject(new Error('URL endpoint belum diisi.'));
+                if (!webhookUrl) return reject(new Error('Endpoint Google Apps Script belum tersedia.'));
                 const callback = 'tabeSheetsCb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
                 const script = document.createElement('script');
                 const timer = setTimeout(() => finish(new Error('Waktu tunggu Google Sheets habis. Periksa URL/deployment.')), 15000);
@@ -1615,7 +1488,7 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
 
         async function syncFromGoogleSheets(showMessage = true) {
             const status = document.getElementById('sheets-sync-status');
-            if (!webhookUrl) { if (showMessage) alert('Masukkan dan simpan URL Web App Google Apps Script terlebih dahulu.'); return; }
+            if (!webhookUrl) { if (showMessage) alert('Endpoint Google Apps Script belum tersedia.'); return; }
             if (status) status.textContent = 'Mengambil data dari Google Sheets…';
             try {
                 const response = await readSheetsJsonp('list');
@@ -1649,13 +1522,6 @@ function jsonOutput_(o){return ContentService.createTextOutput(JSON.stringify(o)
                 console.error(err); if (status) status.textContent = 'Sinkron gagal: ' + err.message;
                 if (showMessage) alert('Sinkronisasi gagal: ' + err.message + '\nPastikan Apps Script sudah di-deploy sebagai Web App versi terbaru.');
             }
-        }
-
-        function copyGasCode() {
-            const text = document.getElementById('gas-code-text');
-            text.select();
-            document.execCommand('copy');
-            alert('Kode Google Apps Script berhasil disalin!');
         }
     </script>
 </body>
