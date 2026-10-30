@@ -1,0 +1,9 @@
+{
+  "name": "tabe-palu",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Website TABE PALU dengan Cloudflare Pages dan Google Sheets melalui Google Apps Script",
+  "scripts": {
+    "check": "node --check scripts/validate-inline-js.js"
+  }
+}
