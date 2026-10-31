@@ -59,7 +59,7 @@
   }
   .qr-card-brand { display: flex; align-items: center; gap: 10px; }
   .qr-card-brand-symbol {
-    width: 36px; height: 48px; flex: 0 0 36px;
+    width: 32px; height: 42px; flex: 0 0 32px;
     display: block; object-fit: contain;
     background: transparent; border: 0; border-radius: 0;
     box-shadow: none;
@@ -1587,15 +1587,23 @@
             ctx.beginPath(); ctx.arc(1030, 105, 190, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(1120, 330, 115, 0, Math.PI * 2); ctx.fill();
 
-            roundedRectPath(ctx, 105, 105, 112, 112, 28);
-            ctx.fillStyle = '#fff7ed'; ctx.fill();
-            ctx.fillStyle = '#c2410c'; ctx.font = '900 43px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText('TP', 161, 164);
+            // Lambang Kota Palu ikut digambar ke canvas hasil unduhan/cetak.
+            // Ukurannya sedikit lebih kecil agar proporsional di samping judul.
+            const brandLogo = document.querySelector('.qr-card-brand-symbol');
+            const fallbackLogo = document.getElementById('qr-city-logo');
+            const logoForHeader = brandLogo && brandLogo.complete && brandLogo.naturalWidth
+                ? brandLogo
+                : (fallbackLogo && fallbackLogo.complete && fallbackLogo.naturalWidth ? fallbackLogo : null);
+            if (logoForHeader) {
+                ctx.drawImage(logoForHeader, 105, 94, 86, 114);
+            } else {
+                throw new Error('Lambang Kota Palu belum selesai dimuat. Tunggu sebentar, lalu unduh kembali.');
+            }
             ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
             ctx.fillStyle = '#ffffff'; ctx.font = '900 66px Arial';
-            ctx.fillText('TABE PALU', 250, 157);
+            ctx.fillText('TABE PALU', 220, 157);
             ctx.font = '700 25px Arial';
-            ctx.fillText('SISTEM INFORMASI PARIWISATA', 252, 205);
+            ctx.fillText('SISTEM INFORMASI PARIWISATA', 222, 205);
             ctx.font = '800 28px Arial';
             ctx.fillText('KARTU QR OBJEK WISATA', 105, 305);
 
