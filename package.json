@@ -1,8 +1,0 @@
-{
-  "name": "tabe-palu",
-  "version": "2.0.0",
-  "private": true,
-  "scripts": {
-    "validate": "node scripts/validate-inline-js.js"
-  }
-}
